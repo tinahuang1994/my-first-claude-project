@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Triple Takes — Issue #001</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EE;
+    --ink: #1A1614;
+    --mid: #6B6560;
+    --border: #DDD8D0;
+
+    /* A — Unhinged Planet: warm red/amber */
+    --a-accent: #C0392B; --a-light: #FDF0EE; --a-dark: #5A0D0D; --a-bar: #E74C3C;
+
+    /* B — The Dispatch: forest green */
+    --b-accent: #1E7A4A; --b-light: #EAF7F0; --b-dark: #0D3D24; --b-bar: #27AE60;
+
+    /* C — Ground Truth: slate blue */
+    --c-accent: #2D4DB5; --c-light: #EEF1FB; --c-dark: #111E5C; --c-bar: #4A6CF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); }
+
+  /* ── MASTHEAD ─────────────────────────────────────── */
+  .masthead {
+    background: var(--ink); padding: 40px 40px 30px; text-align: center; position: relative; overflow: hidden;
+  }
+  .masthead::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 61px);
+    pointer-events: none;
+  }
+  .masthead-kicker { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.28em; color: #666; text-transform: uppercase; margin-bottom: 10px; }
+  .masthead-title  { font-family: 'Playfair Display', serif; font-size: clamp(40px, 7vw, 70px); font-weight: 900; color: #fff; letter-spacing: -0.02em; line-height: 1; margin-bottom: 10px; }
+  .masthead-sub    { font-size: 13px; color: #888; font-style: italic; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .masthead-meta   { font-family: 'DM Mono', monospace; font-size: 10px; color: #555; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ── STICKY SWITCHER ──────────────────────────────── */
+  .switcher-wrap { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 18px rgba(0,0,0,0.07); }
+  .switcher-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+  .switcher-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); text-align: center; padding-top: 12px; padding-bottom: 8px; }
+  .switcher-tabs  { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .s-tab { cursor: pointer; padding: 14px 10px 12px; border: none; background: none; border-bottom: 3px solid transparent; transition: all 0.2s ease; text-align: center; }
+  .s-tab:hover { background: rgba(0,0,0,0.02); }
+  .s-tab.on-a { border-bottom-color: var(--a-bar); background: var(--a-light); }
+  .s-tab.on-b { border-bottom-color: var(--b-bar); background: var(--b-light); }
+  .s-tab.on-c { border-bottom-color: var(--c-bar); background: var(--c-light); }
+  .s-tab-emoji { display: block; font-size: 20px; margin-bottom: 3px; }
+  .s-tab-name  { display: block; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; }
+  .tab-a .s-tab-name { color: var(--a-dark); }
+  .tab-b .s-tab-name { color: var(--b-dark); }
+  .tab-c .s-tab-name { color: var(--c-dark); }
+  .s-tab-desc { display: block; font-size: 10px; font-style: italic; color: var(--mid); margin-top: 2px; }
+
+  /* ── EXPLAINER CARDS ──────────────────────────────── */
+  .explainer-row { max-width: 860px; margin: 0 auto; padding: 28px 32px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .ex-card { border-radius: 8px; padding: 18px 16px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s; }
+  .ex-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,0,0,0.09); }
+  .ex-a { background: var(--a-light); border-color: var(--a-accent); }
+  .ex-b { background: var(--b-light); border-color: var(--b-accent); }
+  .ex-c { background: var(--c-light); border-color: var(--c-accent); }
+  .ex-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 8px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 12px; margin-bottom: 8px; color: #fff; }
+  .ex-a .ex-badge { background: var(--a-accent); }
+  .ex-b .ex-badge { background: var(--b-accent); }
+  .ex-c .ex-badge { background: var(--c-accent); }
+  .ex-title   { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .ex-a .ex-title { color: var(--a-dark); }
+  .ex-b .ex-title { color: var(--b-dark); }
+  .ex-c .ex-title { color: var(--c-dark); }
+  .ex-tagline { font-size: 11px; color: var(--mid); font-style: italic; margin-bottom: 8px; }
+  .ex-pitch   { font-size: 12px; line-height: 1.6; color: #444; }
+  .ex-when    { font-size: 11px; font-weight: 600; margin-top: 9px; }
+  .ex-a .ex-when { color: var(--a-dark); }
+  .ex-b .ex-when { color: var(--b-dark); }
+  .ex-c .ex-when { color: var(--c-dark); }
+
+  /* ── STORY CONTEXT ────────────────────────────────── */
+  .story-ctx { max-width: 860px; margin: 0 auto; padding: 32px 32px 24px; }
+  .ctx-rule { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .ctx-rule::before, .ctx-rule::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .ctx-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); white-space: nowrap; }
+  .ctx-hed { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+  .ctx-dek { font-size: 14px; line-height: 1.7; color: var(--mid); font-style: italic; border-left: 3px solid var(--border); padding-left: 14px; }
+
+  /* ── CONTENT ──────────────────────────────────────── */
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 0 32px 60px; }
+  .version { display: none; animation: fadeUp 0.3s ease; }
+  .version.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .v-indicator { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-radius: 8px; margin-bottom: 28px; }
+  .vi-a { background: var(--a-light); border-left: 5px solid var(--a-bar); }
+  .vi-b { background: var(--b-light); border-left: 5px solid var(--b-bar); }
+  .vi-c { background: var(--c-light); border-left: 5px solid var(--c-bar); }
+  .vi-emoji  { font-size: 26px; line-height: 1; padding-top: 2px; }
+  .vi-label  { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 3px; }
+  .vi-a .vi-label { color: var(--a-accent); }
+  .vi-b .vi-label { color: var(--b-accent); }
+  .vi-c .vi-label { color: var(--c-accent); }
+  .vi-name   { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; }
+  .vi-a .vi-name { color: var(--a-dark); }
+  .vi-b .vi-name { color: var(--b-dark); }
+  .vi-c .vi-name { color: var(--c-dark); }
+  .vi-desc   { font-size: 11px; font-style: italic; color: var(--mid); margin-top: 2px; }
+
+  .art-hed { font-family: 'Playfair Display', serif; font-size: clamp(21px, 3vw, 28px); font-weight: 900; line-height: 1.22; margin-bottom: 26px; letter-spacing: -0.01em; }
+  .hed-a { color: var(--a-dark); }
+  .hed-b { color: var(--b-dark); }
+  .hed-c { color: var(--c-dark); }
+
+  .art-body p { font-size: 15.5px; line-height: 1.85; color: #252220; margin-bottom: 20px; }
+  .art-body p em { font-style: italic; }
+  .art-body p strong { font-weight: 600; }
+  .art-body a { color: inherit; text-decoration: underline; text-underline-offset: 2px; opacity: 0.85; }
+  .art-body a:hover { opacity: 1; }
+
+  .art-list { list-style: none; padding: 0; margin-bottom: 22px; }
+  .art-list li { font-size: 15.5px; line-height: 1.75; color: #252220; padding: 8px 0 8px 16px; margin-bottom: 6px; border-left: 3px solid var(--a-bar); background: var(--a-light); border-radius: 0 4px 4px 0; }
+
+  .subhead { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin: 28px 0 12px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+  .sh-b { color: var(--b-accent); }
+  .sh-c { color: var(--c-accent); }
+
+  /* Pull quote */
+  .pq { margin: 28px 0; padding: 20px 24px; border-radius: 6px; overflow: hidden; }
+  .pq-a { background: var(--a-light); border-left: 4px solid var(--a-bar); }
+  .pq-b { background: var(--b-light); border-left: 4px solid var(--b-bar); }
+  .pq-c { background: var(--c-light); border-left: 4px solid var(--c-bar); }
+  .pq-mark { font-family: 'Playfair Display', serif; font-size: 48px; line-height: 0.8; float: left; margin-right: 8px; margin-top: 6px; opacity: 0.18; }
+  .pq-a .pq-mark { color: var(--a-accent); }
+  .pq-b .pq-mark { color: var(--b-accent); }
+  .pq-c .pq-mark { color: var(--c-accent); }
+  .pq-text   { font-family: 'Playfair Display', serif; font-size: 14.5px; font-style: italic; line-height: 1.72; color: var(--ink); margin-bottom: 10px; }
+  .pq-byline { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .pq-a .pq-byline { color: var(--a-dark); }
+  .pq-b .pq-byline { color: var(--b-dark); }
+  .pq-c .pq-byline { color: var(--c-dark); }
+  .pq-src { display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 9px; border-radius: 4px; text-decoration: none; color: #fff; transition: opacity 0.15s; }
+  .pq-src::before { content: '↗'; }
+  .pq-src:hover { opacity: 0.8; }
+  .pq-a .pq-src { background: var(--a-accent); }
+  .pq-b .pq-src { background: var(--b-accent); }
+  .pq-c .pq-src { background: var(--c-accent); }
+
+  .art-closing { font-family: 'Playfair Display', serif; font-size: 17px; font-style: italic; font-weight: 700; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .cl-a { color: var(--a-dark); }
+  .cl-b { color: var(--b-dark); }
+  .cl-c { color: var(--c-dark); }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  .footer { background: var(--ink); padding: 30px 40px; text-align: center; }
+  .footer-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .footer-note { font-family: 'DM Mono', monospace; font-size: 9px; color: #555; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.9; }
+  .footer-note a { color: #888; text-decoration: none; }
+  .footer-note a:hover { color: #ccc; }
+
+  @media (max-width: 640px) {
+    .masthead, .switcher-inner, .explainer-row, .story-ctx, .content-wrap { padding-left: 18px; padding-right: 18px; }
+    .explainer-row { grid-template-columns: 1fr; }
+    .s-tab-desc { display: none; }
+    .masthead-title { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── MASTHEAD ──────────────────────────────────────────── -->
+<header class="masthead">
+  <div class="masthead-kicker">Issue #001 · For Climate Professionals</div>
+  <div class="masthead-title">Climate Triple Takes</div>
+  <div class="masthead-sub">One story. Three perspectives. You choose.</div>
+  <div class="masthead-meta">February 26, 2026 &nbsp;·&nbsp; EPA Endangerment Finding Edition</div>
+</header>
+
+<!-- ── STICKY TONE TOGGLE ─────────────────────────────────── -->
+<nav class="switcher-wrap">
+  <div class="switcher-inner">
+    <div class="switcher-label">↓ Pick your poison — switch anytime while you read</div>
+    <div class="switcher-tabs">
+      <button class="s-tab tab-a on-a" onclick="setStyle('a')">
+        <span class="s-tab-emoji">🌀</span>
+        <span class="s-tab-name">Unhinged Planet</span>
+        <span class="s-tab-desc">Sharp satire · dark wit</span>
+      </button>
+      <button class="s-tab tab-b" onclick="setStyle('b')">
+        <span class="s-tab-emoji">☀️</span>
+        <span class="s-tab-name">The Dispatch</span>
+        <span class="s-tab-desc">Solutions · what's moving</span>
+      </button>
+      <button class="s-tab tab-c" onclick="setStyle('c')">
+        <span class="s-tab-emoji">😤</span>
+        <span class="s-tab-name">Ground Truth</span>
+        <span class="s-tab-desc">Straight · exasperated · real</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── EXPLAINER CARDS ────────────────────────────────────── -->
+<div class="explainer-row">
+
+  <div class="ex-card ex-a" onclick="setStyle('a')">
+    <span class="ex-badge">🌀 Unhinged Planet</span>
+    <div class="ex-title">Sharp Wit · Dark Satire</div>
+    <div class="ex-tagline">"Because if we don't laugh, the rising sea levels will definitely do it for us."</div>
+    <div class="ex-pitch">Climate policy, dissected with a scalpel and a raised eyebrow. The absurdity is real — this version just refuses to pretend otherwise. Accurate, outraged, and occasionally very funny about it.</div>
+    <div class="ex-when">📱 Best for: forwarding to your group chat before the 10am crisis call</div>
+  </div>
+
+  <div class="ex-card ex-b" onclick="setStyle('b')">
+    <span class="ex-badge">☀️ The Dispatch</span>
+    <div class="ex-title">Solutions · Forward Motion</div>
+    <div class="ex-tagline">"Someone, somewhere, is actually fixing this."</div>
+    <div class="ex-pitch">Courts filing. States holding. Economics shifting. This version tracks what's actually moving beneath the headline — because the story of what's being built matters as much as the story of what's being broken.</div>
+    <div class="ex-when">📋 Best for: prep before a presentation or stakeholder meeting</div>
+  </div>
+
+  <div class="ex-card ex-c" onclick="setStyle('c')">
+    <span class="ex-badge">😤 Ground Truth</span>
+    <div class="ex-title">Straight · Precise · Exasperated</div>
+    <div class="ex-tagline">"Still here. Still reading. Still furious."</div>
+    <div class="ex-pitch">No reframing. No silver lining tax. Just the full weight of what happened, named precisely, for the people in this field who've been watching it coming for years and deserve to have it said straight.</div>
+    <div class="ex-when">🌑 Best for: end of a hard news day when you need validation, not spin</div>
+  </div>
+
+</div>
+
+<!-- ── STORY CONTEXT ──────────────────────────────────────── -->
+<div class="story-ctx">
+  <div class="ctx-rule"><span class="ctx-label">This Week's Story</span></div>
+  <div class="ctx-hed">EPA Repeals the 2009 Endangerment Finding</div>
+  <div class="ctx-dek">On February 12, 2026, the Trump EPA finalized the repeal of its foundational 2009 scientific determination that greenhouse gases endanger public health and welfare — the legal backbone of every major federal climate regulation for 16 years. Same story. Three takes.</div>
+</div>
+
+<!-- ── CONTENT ────────────────────────────────────────────── -->
+<main class="content-wrap">
+
+  <!-- ════════════════════════════════════════════════════
+       A — UNHINGED PLANET
+       Sharp satire: structured, precise, dark wit
+  ════════════════════════════════════════════════════ -->
+  <article class="version active" id="v-a">
+    <div class="v-indicator vi-a">
+      <div class="vi-emoji">🌀</div>
+      <div>
+        <div class="vi-label">Unhinged Planet</div>
+        <div class="vi-name">Sharp Satire · Dark Wit</div>
+        <div class="vi-desc">"Because if we don't laugh, the rising sea levels will definitely do it for us."</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-a">THE EPA HAS CONCLUDED THAT POLLUTION IS NO LONGER A PROBLEM, WHICH IS CERTAINLY ONE WAY TO ADDRESS POLLUTION</h2>
+
+    <div class="art-body">
+      <p>Look, we need to talk about the Environmental Protection Agency—or as they've apparently rebranded, EPA: <em>Everything is Perfectly Awesome</em>. It turns out that having the word "Protection" in your name is a bit like a "Leak-Proof" travel mug that ruins your laptop, or a "Non-Stick" pan that currently holds a permanent collection of your scrambled eggs. It's an optimistic label that has officially lost its connection to the product inside.</p>
+
+      <p>Well, on February 12, they finalized the repeal of the Endangerment Finding. For those of you who haven't spent the last 16 years huffing regulatory filings for fun, the Endangerment Finding was the 2009 scientific determination that greenhouse gas emissions — stay with me here — <em>actually endanger public health and welfare</em>. It was the legal load-bearing wall for every major federal climate regulation we have. And the EPA just took a metaphorical chainsaw to it.</p>
+
+      <p>How did they justify it? Did they find a secret new atmosphere? Did they discover that CO₂ is actually made of kittens and Vitamin C? No.</p>
+
+      <ul class="art-list">
+        <li><strong>New Science Conducted:</strong> Absolute zero.</li>
+        <li><strong>New Data Collected:</strong> None.</li>
+        <li><strong>Atmospheric Consultation:</strong> The atmosphere was not invited to the meeting.</li>
+      </ul>
+
+      <p>Instead, Administrator Lee Zeldin called this <a href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">"the single largest deregulatory action in U.S. history."</a> Which is a very fancy, D.C. way of saying they decided to solve the climate crisis by simply reframing it. It's not a catastrophe; it's just... "journaling" for federal policy.</p>
+
+      <div class="pq pq-a">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">The Trump EPA's slapdash legal arguments should be laughed out of court... the administration's legal and scientific reasons for doing so are a joke.</div>
+        <div class="pq-byline">Meredith Hankins, Legal Director for Federal Climate, NRDC</div>
+        <a class="pq-src" href="https://www.nrdc.org/press-releases/nrdc-coalition-sue-endangerment-rollback-climate-protections" target="_blank" rel="noopener">NRDC Press Release, Feb 18, 2026</a>
+      </div>
+
+      <p>The car rules also scrapped alongside this repeal would have cut <a href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">nearly 8 billion tons of greenhouse gas emissions over the next three decades</a> — more than the entire US economy emits in a full year. The EPA's own analysis found eliminating these standards will increase gas prices and cost consumers more at the pump. They literally printed the "this will hurt you" part and the "we're doing it anyway" part in the same document.</p>
+
+      <p>You also need to know that a federal judge already ruled the administration violated federal law when it secretly assembled a "Climate Working Group" to ghostwrite the scientific basis for this very repeal. <a href="https://www.ucs.org/about/news/trump-administration-takes-chainsaw-science-based-endangerment-finding-endangering-us" target="_blank" rel="noopener">The court compelled them to hand over more than 100,000 documents.</a> The ghostwritten science was used to justify overturning the real science. This is a Scooby-Doo villain arc and we mean that with complete sincerity.</p>
+
+      <p>The Clean Air Act that underpins all of this was signed by Richard Nixon in 1970. When Nixon is the environmental voice of reason in the room, you know the timeline has officially splintered.</p>
+    </div>
+
+    <div class="art-closing cl-a">You can repeal a finding, but you can't repeal the physical properties of carbon. The atmosphere continues to not read federal documents, and frankly, I don't blame it.</div>
+  </article>
+
+
+  <!-- ════════════════════════════════════════════════════
+       B — THE DISPATCH
+       Solutions-oriented, rigorous optimism, forward motion
+  ════════════════════════════════════════════════════ -->
+  <article class="version" id="v-b">
+    <div class="v-indicator vi-b">
+      <div class="vi-emoji">☀️</div>
+      <div>
+        <div class="vi-label">The Dispatch</div>
+        <div class="vi-name">Someone, Somewhere, Is Actually Fixing This</div>
+        <div class="vi-desc">Solutions, forward motion, and what to actually watch right now</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-b">The Endangerment Finding Is Gone Federally. Here's Where the Fight Actually Lives Now.</h2>
+
+    <div class="art-body">
+      <p>On February 12, 2026, the EPA finalized the repeal of its 2009 Endangerment Finding and simultaneously eliminated all carbon emissions standards for light-, medium-, and heavy-duty vehicles. It is a significant blow to federal climate authority. It is not the end of the road.</p>
+
+      <div class="subhead sh-b">The courts are already moving — and the footing is strong</div>
+
+      <p>A broad coalition — NRDC, Center for Biological Diversity, Environmental Defense Fund, Sierra Club, Public Citizen, American Lung Association, Union of Concerned Scientists, and Earthjustice — filed suit in the D.C. Circuit within days. The legal argument is structurally solid: the 2007 Supreme Court ruling in <em>Massachusetts v. EPA</em> established that greenhouse gases are covered by the Clean Air Act. The EPA's repeal attempts to relitigate arguments the Supreme Court already considered and rejected. A federal judge has also already ruled that the administration violated federal law in how it assembled the scientific case for this repeal — handing over more than 100,000 documents that now form the evidentiary record for litigation.</p>
+
+      <div class="pq pq-b">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">Since the United States Environmental Protection Agency issued its Endangerment Finding in 2009, the scientific evidence connecting greenhouse gas emissions to health impacts has only grown stronger. Reversing it wouldn't change the science — it would only make it harder to mitigate the risks we're already facing. Stability matters. Predictability matters. Maintaining science-based policies isn't just prudent — it's the reliable foundation we need to build a safer, healthier and more resilient nation.</div>
+        <div class="pq-byline">Katharine Hayhoe, Chief Scientist, The Nature Conservancy</div>
+        <a class="pq-src" href="https://www.nature.org/en-us/newsroom/epa-endangerment-finding-repeal/" target="_blank" rel="noopener">The Nature Conservancy, Feb 12, 2026</a>
+      </div>
+
+      <div class="subhead sh-b">The economics work against the repeal</div>
+
+      <p>According to EPA's own prior analysis — documented by NRDC — the 2024 car standards would have cut <a href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">nearly 8 billion tons of greenhouse gas emissions over three decades and delivered $13 billion a year in avoided healthcare costs between 2026 and 2055.</a> The EPA's own repeal analysis found eliminating vehicle standards will increase gas prices and force Americans to spend more on fuel. The $1.3 trillion savings claim accounts for none of this — and the business community making 10-year capital decisions knows it.</p>
+
+      <div class="pq pq-b">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">Clean car standards are a win-win proposition. They address the largest source of climate pollution, while also saving drivers on their fuel and maintenance costs. Repealing them might appease the oil industry, but the rest of us will suffer with more air pollution, more extreme storms and heat waves — and more trips to fill up at the gas station.</div>
+        <div class="pq-byline">Kathy Harris, Clean Vehicles Director, NRDC</div>
+        <a class="pq-src" href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">NRDC Press Release, Feb 12, 2026</a>
+      </div>
+
+      <div class="subhead sh-b">Three things to watch right now</div>
+
+      <p>The D.C. Circuit litigation, which carries a strong evidentiary record built over sixteen years. California's separate vehicle standards lawsuit, which covers 17 states representing roughly 40% of the US auto market — untouched by the federal repeal. And the EU's Carbon Border Adjustment Mechanism, now more directly relevant than ever to US exporters, which creates direct financial incentives to track emissions regardless of what the EPA mandates domestically.</p>
+    </div>
+
+    <div class="art-closing cl-b">The fight relocated. It did not end.</div>
+  </article>
+
+
+  <!-- ════════════════════════════════════════════════════
+       C — GROUND TRUTH
+       Exasperated veteran, precise, validated fury
+  ════════════════════════════════════════════════════ -->
+  <article class="version" id="v-c">
+    <div class="v-indicator vi-c">
+      <div class="vi-emoji">😤</div>
+      <div>
+        <div class="vi-label">Ground Truth</div>
+        <div class="vi-name">Still Here. Still Reading. Still Furious.</div>
+        <div class="vi-desc">For climate professionals who need someone to say what everyone already knows</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-c">We Knew This Was Coming. That Doesn't Make It Less of a Disaster.</h2>
+
+    <div class="art-body">
+      <p>The EPA repealed the Endangerment Finding on February 12. If you've been in this field for more than five years, you saw this coming the moment the administration took office. Knowing it was coming doesn't make it land any softer. It just means we don't get to be surprised on top of everything else.</p>
+
+      <p>Let's be precise about what was actually taken away, because most coverage has been too gentle about the scale of it.</p>
+
+      <div class="pq pq-c">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">After a year of deadly floods, devastating wildfires, excruciating heat waves, and a growing number of unnatural disasters, the U.S. Environmental Protection Agency made the incomprehensible determination that it does not have the legal authority to address climate change.</div>
+        <div class="pq-byline">NRDC, Official Statement, February 12, 2026</div>
+        <a class="pq-src" href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">NRDC Press Release, Feb 12, 2026</a>
+      </div>
+
+      <p>This is not a rollback of a single regulation. This is the removal of the scientific and legal foundation on which regulations were built. The emissions rules for cars, power plants, and oil and gas facilities don't disappear automatically — but they now have no solid legal ground to stand on. Each one becomes individually vulnerable. Death by a thousand legal challenges, each one easier to mount than it was two weeks ago.</p>
+
+      <div class="subhead sh-c">The cost-savings claim deserves to be named precisely</div>
+
+      <p>The EPA claimed the repeal saves Americans $1.3 trillion. Its own analysis found that eliminating vehicle standards will increase gas prices and force Americans to spend more on fuel. <a href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank" rel="noopener">The 2024 car rules alone would have delivered $13 billion a year in avoided healthcare costs between 2026 and 2055, per EPA's own previous modelling.</a> In 2025, the United States suffered 23 extreme weather events with damages exceeding $1 billion each. None of those costs appear in the $1.3 trillion figure. That is a deliberate choice about which numbers get counted — and who absorbs the ones that don't.</p>
+
+      <div class="pq pq-c">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">Today, Administrator Zeldin took a chainsaw to the Endangerment Finding, undoing this long-standing, science-based finding on bogus grounds at the expense of our health. Instead of rising to the challenge with necessary policies to protect people's wellbeing, the Trump administration has shamefully abandoned EPA's mission and caved to the whims of deep-pocketed special interests. Sacrificing people's health, safety and futures for polluters' profits is unconscionable.</div>
+        <div class="pq-byline">Dr. Gretchen Goldman, President & CEO, Union of Concerned Scientists</div>
+        <a class="pq-src" href="https://www.ucs.org/about/news/trump-administration-takes-chainsaw-science-based-endangerment-finding-endangering-us" target="_blank" rel="noopener">UCS Press Release, Feb 12, 2026</a>
+      </div>
+
+      <div class="pq pq-c">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">The repeal of the EPA's endangerment finding is illegal, and if allowed to stand, it will have devastating impacts on public health and a livable climate for decades.</div>
+        <div class="pq-byline">Adina Rosenbaum, Attorney, Public Citizen Litigation Group</div>
+        <a class="pq-src" href="https://www.nrdc.org/press-releases/nrdc-coalition-sue-endangerment-rollback-climate-protections" target="_blank" rel="noopener">NRDC / Earthjustice Filing, Feb 18, 2026</a>
+      </div>
+
+      <p>There is also this, which matters: a federal judge already declared the Trump administration violated federal law when it secretly formed a "Climate Working Group" tasked with writing the slanted scientific report this entire repeal is built on. <a href="https://www.ucs.org/about/news/trump-administration-takes-chainsaw-science-based-endangerment-finding-endangering-us" target="_blank" rel="noopener">UCS and EDF brought that suit and won. The administration was compelled to surrender more than 100,000 documents.</a> The evidentiary record of how this was done is being assembled in public, for use in court.</p>
+
+      <p>The people in this field who built the technical case for these regulations — who submitted comments, testified, produced the peer-reviewed science — that work is not erased. It is the record every legal challenge will draw from. It matters that we did it. It matters that we keep doing it.</p>
+    </div>
+
+    <div class="art-closing cl-c">You can repeal an Endangerment Finding. You cannot repeal the endangerment.</div>
+  </article>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-name">Climate Triple Takes</div>
+  <div class="footer-note">
+    Issue #001 &nbsp;·&nbsp; February 26, 2026 &nbsp;·&nbsp; For climate professionals<br>
+    All quotes link directly to verified primary sources. The facts never change. The framing does.<br>
+    <a href="https://www.nrdc.org/press-releases/epa-unravels-climate-protections" target="_blank">NRDC Feb 12</a> &nbsp;·&nbsp;
+    <a href="https://www.nrdc.org/press-releases/nrdc-coalition-sue-endangerment-rollback-climate-protections" target="_blank">NRDC Feb 18</a> &nbsp;·&nbsp;
+    <a href="https://www.ucs.org/about/news/trump-administration-takes-chainsaw-science-based-endangerment-finding-endangering-us" target="_blank">UCS Feb 12</a> &nbsp;·&nbsp;
+    <a href="https://www.nature.org/en-us/newsroom/epa-endangerment-finding-repeal/" target="_blank">Nature Conservancy Feb 12</a>
+  </div>
+</footer>
+
+<script>
+  function setStyle(s) {
+    document.querySelectorAll('.version').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.s-tab').forEach(el => el.classList.remove('on-a','on-b','on-c'));
+    document.getElementById('v-' + s).classList.add('active');
+    const idx = { a: 0, b: 1, c: 2 };
+    document.querySelectorAll('.s-tab')[idx[s]].classList.add('on-' + s);
+    if (window.innerWidth < 640) {
+      document.querySelector('.content-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  setStyle('a');
+</script>
+</body>
+</html>

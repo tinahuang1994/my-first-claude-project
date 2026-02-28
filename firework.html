@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Surprise for Kristin ✨</title>
+    <style>
+        :root {
+            --accent: #f4a7c3;
+            --glass: rgba(10, 10, 20, 0.85);
+            --border: rgba(255, 255, 255, 0.15);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #0a0a1a 0%, #020205 100%);
+            font-family: Georgia, "Times New Roman", serif;
+            color: white;
+        }
+
+        canvas { display: block; }
+
+        /* Greeting Overlay */
+        #greeting {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: radial-gradient(circle at center, #150a1a 0%, #05020a 100%);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+        #greeting-inner {
+            text-align: center;
+            animation: fadeInUp 1.2s ease;
+        }
+        #greeting-inner .eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 6px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        #greeting-inner h1 {
+            font-size: 5rem;
+            background: linear-gradient(135deg, #f4a7c3, #c490d1, #f4a7c3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 16px;
+            font-style: italic;
+        }
+        #greeting-inner .subtitle {
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+        #greeting-btn {
+            padding: 16px 40px;
+            background: linear-gradient(45deg, #f4a7c3, #c490d1);
+            border: none; border-radius: 50px;
+            color: white; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        #greeting-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(244,167,195,0.55);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Top Instruction Bar */
+        #top-banner {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 25px 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #top-banner span {
+            font-size: 1rem;
+            letter-spacing: 8px;
+            color: var(--accent);
+            text-transform: uppercase;
+            animation: pulse 3s infinite;
+            text-shadow: 0 0 15px var(--accent);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(5px); }
+        }
+
+        /* Bottom-Right Toolbar */
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 280px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            z-index: 100;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; color: #888; font-weight: bold; }
+
+        input[type="text"] {
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border); border-radius: 10px;
+            color: white; outline: none; box-sizing: border-box; font-size: 1rem;
+        }
+
+        select, input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+        select { background: #111; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 8px; font-size: 0.9rem; }
+
+        #ignite-btn {
+            width: 100%; padding: 18px;
+            background: linear-gradient(45deg, #f4a7c3, #c490d1);
+            border: none; border-radius: 15px; color: white;
+            font-weight: 800; font-size: 1rem;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 3px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 10px;
+        }
+
+        #ignite-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 30px rgba(244,167,195,0.5); }
+
+        #flash {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: white; opacity: 0; pointer-events: none; z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+<div id="flash"></div>
+
+<!-- Personal greeting overlay -->
+<div id="greeting">
+    <div id="greeting-inner">
+        <p class="eyebrow">✨ A little something special</p>
+        <h1>For Kristin</h1>
+        <p class="subtitle">Made with love, just for you</p>
+        <button id="greeting-btn" onclick="closeGreeting()">Open Your Gift &rarr;</button>
+    </div>
+</div>
+
+<div id="top-banner"><span>✦ Click anywhere in the sky to launch fireworks ✦</span></div>
+
+<div id="controls">
+    <div class="input-group">
+        <label>Message</label>
+        <input type="text" id="msg" value="Hello Kristin">
+    </div>
+    <div class="input-group">
+        <label>Fireworks Style</label>
+        <select id="style">
+            <option value="willow">Willow</option>
+            <option value="crown">Brocade</option>
+            <option value="glitch">Glitch</option>
+            <option value="disney">Magic</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label>Text Size</label>
+        <input type="range" id="size" min="80" max="300" value="160">
+    </div>
+    <button id="ignite-btn">✨ Light Up the Sky</button>
+</div>
+
+<canvas id="sky"></canvas>
+
+<script>
+    const canvas = document.getElementById('sky');
+    const ctx = canvas.getContext('2d');
+    const flashEl = document.getElementById('flash');
+    const textCanvas = document.createElement('canvas');
+    const textCtx = textCanvas.getContext('2d');
+
+    let width, height;
+    let particles = [];
+    let stars = [];
+
+    function init() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        stars = [];
+        for(let i=0; i<120; i++) {
+            stars.push({ x: Math.random()*width, y: Math.random()*height, size: Math.random()*1.5, b: Math.random() });
+        }
+    }
+    window.addEventListener('resize', init);
+    init();
+
+    function closeGreeting() {
+        const g = document.getElementById('greeting');
+        g.style.opacity = '0';
+        setTimeout(() => g.style.display = 'none', 800);
+    }
+
+    class Particle {
+        constructor(x, y, targetX, targetY, color, style) {
+            this.x = x; this.y = y;
+            this.targetX = targetX; this.targetY = targetY;
+            this.color = color;
+            this.style = style;
+
+            const ang = Math.random() * Math.PI * 2;
+            const force = Math.random() * (style === 'willow' ? 5 : 10);
+            this.vx = Math.cos(ang) * force;
+            this.vy = Math.sin(ang) * force;
+
+            this.alpha = 1;
+            this.friction = (style === 'willow') ? 0.98 : 0.93;
+            this.gravity = (style === 'willow') ? 0.02 : 0.06;
+            this.ease = 0.06 + Math.random() * 0.04;
+            this.state = 'fly';
+            this.holdTimer = 200;
+            this.size = Math.random() * 2.8 + 0.5;
+        }
+
+        update() {
+            if (this.state === 'fly') {
+                this.x += (this.targetX - this.x) * this.ease;
+                this.y += (this.targetY - this.y) * this.ease;
+                if (Math.abs(this.targetX - this.x) < 1) this.state = 'hold';
+            } else if (this.state === 'hold') {
+                this.holdTimer--;
+                if (this.style === 'glitch') this.color = `hsla(${Math.random()*360}, 100%, 70%, 1)`;
+                if (this.holdTimer <= 0) this.state = 'fall';
+            } else {
+                this.vy += this.gravity;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.alpha -= 0.009;
+            }
+        }
+
+        draw() {
+            ctx.fillStyle = this.color.replace('1)', `${this.alpha})`);
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function triggerFlash() {
+        flashEl.style.opacity = "0.1";
+        setTimeout(() => flashEl.style.opacity = "0", 150);
+    }
+
+    function launchHero(originX, originY) {
+        triggerFlash();
+        const msg = document.getElementById('msg').value;
+        const size = document.getElementById('size').value;
+        const style = document.getElementById('style').value;
+
+        textCanvas.width = width;
+        textCanvas.height = height;
+        textCtx.font = `bold ${size}px Georgia, "Times New Roman", serif`;
+        textCtx.textAlign = 'center';
+        textCtx.textBaseline = 'middle';
+        textCtx.fillText(msg, width/2, height/2 - 100);
+
+        const imgData = textCtx.getImageData(0, 0, width, height).data;
+        const gap = 3;
+
+        for (let y = 0; y < height; y += gap) {
+            for (let x = 0; x < width; x += gap) {
+                if (imgData[(y * width + x) * 4 + 3] > 128) {
+                    let c;
+                    if(style === 'willow') c = `hsla(45, 100%, 65%, 1)`;
+                    else if(style === 'glitch') c = `hsla(190, 100%, 50%, 1)`;
+                    else if(style === 'crown') c = `hsla(0, 0%, 100%, 1)`;
+                    else c = `hsla(30, 100%, 60%, 1)`;
+
+                    particles.push(new Particle(originX, originY, x, y - 100, c, style));
+                }
+            }
+        }
+        textCtx.clearRect(0,0,width,height);
+    }
+
+    function launchAmbient() {
+        const x = Math.random() * width;
+        const y = Math.random() * (height * 0.5);
+        const c = `hsla(${Math.random()*360}, 60%, 50%, 0.3)`;
+        for(let i=0; i<35; i++) {
+            const p = new Particle(x, y, x, y, c, 'disney');
+            p.state = 'fall';
+            particles.push(p);
+        }
+    }
+
+    function loop() {
+        ctx.fillStyle = 'rgba(2, 2, 8, 0.22)';
+        ctx.fillRect(0, 0, width, height);
+
+        stars.forEach(s => {
+            ctx.fillStyle = `rgba(255,255,255,${0.1 + Math.sin(Date.now()*0.001 + s.b)*0.4})`;
+            ctx.fillRect(s.x, s.y, s.size, s.size);
+        });
+
+        if (Math.random() < 0.035) launchAmbient();
+
+        ctx.globalCompositeOperation = 'lighter';
+        particles.forEach((p, i) => {
+            p.update();
+            p.draw();
+            if (p.alpha <= 0) particles.splice(i, 1);
+        });
+        ctx.globalCompositeOperation = 'source-over';
+
+        requestAnimationFrame(loop);
+    }
+
+    document.getElementById('ignite-btn').addEventListener('click', () => launchHero(width/2, height));
+    canvas.addEventListener('mousedown', (e) => {
+        if (e.clientX < width - 300 || e.clientY < height - 280) {
+            launchHero(e.clientX, e.clientY);
+        }
+    });
+    loop();
+</script>
+</body>
+</html>
