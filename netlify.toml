@@ -1,0 +1,5 @@
+# Climate Triple Takes — static site
+# Publish project root so *.html files are at the site root
+[build]
+  publish = "."
+  command = "echo 'No build step'"

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Climate Triple Takes — Issue #002</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EE;
+    --ink: #1A1614;
+    --mid: #6B6560;
+    --border: #DDD8D0;
+
+    /* A — Unhinged Planet: warm red/amber */
+    --a-accent: #C0392B; --a-light: #FDF0EE; --a-dark: #5A0D0D; --a-bar: #E74C3C;
+
+    /* B — The Dispatch: forest green */
+    --b-accent: #1E7A4A; --b-light: #EAF7F0; --b-dark: #0D3D24; --b-bar: #27AE60;
+
+    /* C — Ground Truth: slate blue */
+    --c-accent: #2D4DB5; --c-light: #EEF1FB; --c-dark: #111E5C; --c-bar: #4A6CF7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); }
+
+  /* ── MASTHEAD ─────────────────────────────────────── */
+  .masthead {
+    background: var(--ink); padding: 40px 40px 30px; text-align: center; position: relative; overflow: hidden;
+  }
+  .masthead::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.018) 60px, rgba(255,255,255,0.018) 61px);
+    pointer-events: none;
+  }
+  .masthead-kicker { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.28em; color: #666; text-transform: uppercase; margin-bottom: 10px; }
+  .masthead-title  { font-family: 'Playfair Display', serif; font-size: clamp(40px, 7vw, 70px); font-weight: 900; color: #fff; letter-spacing: -0.02em; line-height: 1; margin-bottom: 10px; }
+  .masthead-sub    { font-size: 13px; color: #888; font-style: italic; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .masthead-meta   { font-family: 'DM Mono', monospace; font-size: 10px; color: #555; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  /* ── STICKY SWITCHER ──────────────────────────────── */
+  .switcher-wrap { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 18px rgba(0,0,0,0.07); }
+  .switcher-inner { max-width: 860px; margin: 0 auto; padding: 0 32px; }
+  .switcher-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); text-align: center; padding-top: 12px; padding-bottom: 8px; }
+  .switcher-tabs  { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+  .s-tab { cursor: pointer; padding: 14px 10px 12px; border: none; background: none; border-bottom: 3px solid transparent; transition: all 0.2s ease; text-align: center; }
+  .s-tab:hover { background: rgba(0,0,0,0.02); }
+  .s-tab.on-a { border-bottom-color: var(--a-bar); background: var(--a-light); }
+  .s-tab.on-b { border-bottom-color: var(--b-bar); background: var(--b-light); }
+  .s-tab.on-c { border-bottom-color: var(--c-bar); background: var(--c-light); }
+  .s-tab-emoji { display: block; font-size: 20px; margin-bottom: 3px; }
+  .s-tab-name  { display: block; font-family: 'Playfair Display', serif; font-size: 13px; font-weight: 700; }
+  .tab-a .s-tab-name { color: var(--a-dark); }
+  .tab-b .s-tab-name { color: var(--b-dark); }
+  .tab-c .s-tab-name { color: var(--c-dark); }
+  .s-tab-desc { display: block; font-size: 10px; font-style: italic; color: var(--mid); margin-top: 2px; }
+
+  /* ── EXPLAINER CARDS ──────────────────────────────── */
+  .explainer-row { max-width: 860px; margin: 0 auto; padding: 28px 32px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .ex-card { border-radius: 8px; padding: 18px 16px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s; }
+  .ex-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,0,0,0.09); }
+  .ex-a { background: var(--a-light); border-color: var(--a-accent); }
+  .ex-b { background: var(--b-light); border-color: var(--b-accent); }
+  .ex-c { background: var(--c-light); border-color: var(--c-accent); }
+  .ex-badge { display: inline-flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace; font-size: 8px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 12px; margin-bottom: 8px; color: #fff; }
+  .ex-a .ex-badge { background: var(--a-accent); }
+  .ex-b .ex-badge { background: var(--b-accent); }
+  .ex-c .ex-badge { background: var(--c-accent); }
+  .ex-title   { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .ex-a .ex-title { color: var(--a-dark); }
+  .ex-b .ex-title { color: var(--b-dark); }
+  .ex-c .ex-title { color: var(--c-dark); }
+  .ex-tagline { font-size: 11px; color: var(--mid); font-style: italic; margin-bottom: 8px; }
+  .ex-pitch   { font-size: 12px; line-height: 1.6; color: #444; }
+  .ex-when    { font-size: 11px; font-weight: 600; margin-top: 9px; }
+  .ex-a .ex-when { color: var(--a-dark); }
+  .ex-b .ex-when { color: var(--b-dark); }
+  .ex-c .ex-when { color: var(--c-dark); }
+
+  /* ── STORY CONTEXT ────────────────────────────────── */
+  .story-ctx { max-width: 860px; margin: 0 auto; padding: 32px 32px 24px; }
+  .ctx-rule { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .ctx-rule::before, .ctx-rule::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .ctx-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mid); white-space: nowrap; }
+  .ctx-hed { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+  .ctx-dek { font-size: 14px; line-height: 1.7; color: var(--mid); font-style: italic; border-left: 3px solid var(--border); padding-left: 14px; }
+
+  /* ── CONTENT ──────────────────────────────────────── */
+  .content-wrap { max-width: 860px; margin: 0 auto; padding: 0 32px 60px; }
+  .version { display: none; animation: fadeUp 0.3s ease; }
+  .version.active { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .v-indicator { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-radius: 8px; margin-bottom: 28px; }
+  .vi-a { background: var(--a-light); border-left: 5px solid var(--a-bar); }
+  .vi-b { background: var(--b-light); border-left: 5px solid var(--b-bar); }
+  .vi-c { background: var(--c-light); border-left: 5px solid var(--c-bar); }
+  .vi-emoji  { font-size: 26px; line-height: 1; padding-top: 2px; }
+  .vi-label  { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 3px; }
+  .vi-a .vi-label { color: var(--a-accent); }
+  .vi-b .vi-label { color: var(--b-accent); }
+  .vi-c .vi-label { color: var(--c-accent); }
+  .vi-name   { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; }
+  .vi-a .vi-name { color: var(--a-dark); }
+  .vi-b .vi-name { color: var(--b-dark); }
+  .vi-c .vi-name { color: var(--c-dark); }
+  .vi-desc   { font-size: 11px; font-style: italic; color: var(--mid); margin-top: 2px; }
+
+  .art-hed { font-family: 'Playfair Display', serif; font-size: clamp(21px, 3vw, 28px); font-weight: 900; line-height: 1.22; margin-bottom: 26px; letter-spacing: -0.01em; }
+  .hed-a { color: var(--a-dark); }
+  .hed-b { color: var(--b-dark); }
+  .hed-c { color: var(--c-dark); }
+
+  .art-body p { font-size: 15.5px; line-height: 1.85; color: #252220; margin-bottom: 20px; }
+  .art-body p em { font-style: italic; }
+  .art-body p strong { font-weight: 600; }
+  .art-body a { color: inherit; text-decoration: underline; text-underline-offset: 2px; opacity: 0.85; }
+  .art-body a:hover { opacity: 1; }
+
+  .art-list { list-style: none; padding: 0; margin-bottom: 22px; }
+  .art-list li { font-size: 15.5px; line-height: 1.75; color: #252220; padding: 8px 0 8px 16px; margin-bottom: 6px; border-left: 3px solid var(--a-bar); background: var(--a-light); border-radius: 0 4px 4px 0; }
+
+  .subhead { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin: 28px 0 12px; padding-bottom: 7px; border-bottom: 1px solid var(--border); }
+  .sh-b { color: var(--b-accent); }
+  .sh-c { color: var(--c-accent); }
+
+  /* Pull quote */
+  .pq { margin: 28px 0; padding: 20px 24px; border-radius: 6px; overflow: hidden; }
+  .pq-a { background: var(--a-light); border-left: 4px solid var(--a-bar); }
+  .pq-b { background: var(--b-light); border-left: 4px solid var(--b-bar); }
+  .pq-c { background: var(--c-light); border-left: 4px solid var(--c-bar); }
+  .pq-mark { font-family: 'Playfair Display', serif; font-size: 48px; line-height: 0.8; float: left; margin-right: 8px; margin-top: 6px; opacity: 0.18; }
+  .pq-a .pq-mark { color: var(--a-accent); }
+  .pq-b .pq-mark { color: var(--b-accent); }
+  .pq-c .pq-mark { color: var(--c-accent); }
+  .pq-text   { font-family: 'Playfair Display', serif; font-size: 14.5px; font-style: italic; line-height: 1.72; color: var(--ink); margin-bottom: 10px; }
+  .pq-byline { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 8px; }
+  .pq-a .pq-byline { color: var(--a-dark); }
+  .pq-b .pq-byline { color: var(--b-dark); }
+  .pq-c .pq-byline { color: var(--c-dark); }
+  .pq-src { display: inline-flex; align-items: center; gap: 4px; font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 9px; border-radius: 4px; text-decoration: none; color: #fff; transition: opacity 0.15s; }
+  .pq-src::before { content: '↗'; }
+  .pq-src:hover { opacity: 0.8; }
+  .pq-a .pq-src { background: var(--a-accent); }
+  .pq-b .pq-src { background: var(--b-accent); }
+  .pq-c .pq-src { background: var(--c-accent); }
+
+  .art-closing { font-family: 'Playfair Display', serif; font-size: 17px; font-style: italic; font-weight: 700; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .cl-a { color: var(--a-dark); }
+  .cl-b { color: var(--b-dark); }
+  .cl-c { color: var(--c-dark); }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  .footer { background: var(--ink); padding: 30px 40px; text-align: center; }
+  .footer-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 8px; }
+  .footer-note { font-family: 'DM Mono', monospace; font-size: 9px; color: #555; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1.9; }
+  .footer-note a { color: #888; text-decoration: none; }
+  .footer-note a:hover { color: #ccc; }
+
+  @media (max-width: 640px) {
+    .masthead, .switcher-inner, .explainer-row, .story-ctx, .content-wrap { padding-left: 18px; padding-right: 18px; }
+    .explainer-row { grid-template-columns: 1fr; }
+    .s-tab-desc { display: none; }
+    .masthead-title { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── MASTHEAD ──────────────────────────────────────────── -->
+<header class="masthead">
+  <div class="masthead-kicker">Issue #002 · For Climate Professionals</div>
+  <div class="masthead-title">Climate Triple Takes</div>
+  <div class="masthead-sub">One story. Three perspectives. You choose.</div>
+  <div class="masthead-meta">February 28, 2026 &nbsp;·&nbsp; WMO 2025 Temperature & Ocean Heat Edition</div>
+</header>
+
+<!-- ── STICKY TONE TOGGLE ─────────────────────────────────── -->
+<nav class="switcher-wrap">
+  <div class="switcher-inner">
+    <div class="switcher-label">↓ Pick your poison — switch anytime while you read</div>
+    <div class="switcher-tabs">
+      <button class="s-tab tab-a on-a" onclick="setStyle('a')">
+        <span class="s-tab-emoji">🌀</span>
+        <span class="s-tab-name">Unhinged Planet</span>
+        <span class="s-tab-desc">Sharp satire · dark wit</span>
+      </button>
+      <button class="s-tab tab-b" onclick="setStyle('b')">
+        <span class="s-tab-emoji">☀️</span>
+        <span class="s-tab-name">The Dispatch</span>
+        <span class="s-tab-desc">Solutions · what's moving</span>
+      </button>
+      <button class="s-tab tab-c" onclick="setStyle('c')">
+        <span class="s-tab-emoji">😤</span>
+        <span class="s-tab-name">Ground Truth</span>
+        <span class="s-tab-desc">Straight · exasperated · real</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ── EXPLAINER CARDS ────────────────────────────────────── -->
+<div class="explainer-row">
+
+  <div class="ex-card ex-a" onclick="setStyle('a')">
+    <span class="ex-badge">🌀 Unhinged Planet</span>
+    <div class="ex-title">Sharp Wit · Dark Satire</div>
+    <div class="ex-tagline">"Because if we don't laugh, the rising sea levels will definitely do it for us."</div>
+    <div class="ex-pitch">Climate policy, dissected with a scalpel and a raised eyebrow. The absurdity is real — this version just refuses to pretend otherwise. Accurate, outraged, and occasionally very funny about it.</div>
+    <div class="ex-when">📱 Best for: forwarding to your group chat before the 10am crisis call</div>
+  </div>
+
+  <div class="ex-card ex-b" onclick="setStyle('b')">
+    <span class="ex-badge">☀️ The Dispatch</span>
+    <div class="ex-title">Solutions · Forward Motion</div>
+    <div class="ex-tagline">"Someone, somewhere, is actually fixing this."</div>
+    <div class="ex-pitch">Courts filing. States holding. Economics shifting. This version tracks what's actually moving beneath the headline — because the story of what's being built matters as much as the story of what's being broken.</div>
+    <div class="ex-when">📋 Best for: prep before a presentation or stakeholder meeting</div>
+  </div>
+
+  <div class="ex-card ex-c" onclick="setStyle('c')">
+    <span class="ex-badge">😤 Ground Truth</span>
+    <div class="ex-title">Straight · Precise · Exasperated</div>
+    <div class="ex-tagline">"Still here. Still reading. Still furious."</div>
+    <div class="ex-pitch">No reframing. No silver lining tax. Just the full weight of what happened, named precisely, for the people in this field who've been watching it coming for years and deserve to have it said straight.</div>
+    <div class="ex-when">🌑 Best for: end of a hard news day when you need validation, not spin</div>
+  </div>
+
+</div>
+
+<!-- ── STORY CONTEXT ──────────────────────────────────────── -->
+<div class="story-ctx">
+  <div class="ctx-rule"><span class="ctx-label">This Week's Story</span></div>
+  <div class="ctx-hed">WMO Confirms 2025 Among Three Warmest Years on Record; Ocean Heat Hits New High</div>
+  <div class="ctx-dek">On January 14, 2026, the World Meteorological Organization confirmed that 2025 was one of the three warmest years on record — 1.44°C above pre-industrial levels — with the past 11 years now the warmest on record. A separate study documented record ocean heat uptake. January 2026 kept the streak alive as the fifth-warmest January globally. Same story. Three takes.</div>
+</div>
+
+<!-- ── CONTENT ────────────────────────────────────────────── -->
+<main class="content-wrap">
+
+  <!-- ════════════════════════════════════════════════════
+       A — UNHINGED PLANET
+       Sharp satire: structured, precise, dark wit
+  ════════════════════════════════════════════════════ -->
+  <article class="version active" id="v-a">
+    <div class="v-indicator vi-a">
+      <div class="vi-emoji">🌀</div>
+      <div>
+        <div class="vi-label">Unhinged Planet</div>
+        <div class="vi-name">Sharp Satire · Dark Wit</div>
+        <div class="vi-desc">"Because if we don't laugh, the rising sea levels will definitely do it for us."</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-a">THE OCEAN ABSORBED ENOUGH EXTRA HEAT TO POWER THE WORLD 200 TIMES OVER. WE STILL HAD TO HAVE A MEETING TO CONFIRM IT WAS WARM.</h2>
+
+    <div class="art-body">
+      <p>January 14, 2026: The World Meteorological Organization — the United Nations agency whose job it is to say "it's getting hotter" in as many languages as possible — finally said it again. <a href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">2025 was one of the three warmest years on record.</a> The global average surface temperature was 1.44°C above the 1850–1900 average. The past 11 years are now the 11 warmest on record. The past three years, 2023–2025, are the three warmest in all eight major datasets. At this point the WMO could issue a press release that just says "yes, again" and we'd all know what they meant.</p>
+
+      <p>And the oceans? A <a href="https://link.springer.com/article/10.1007/s00376-026-5876-0" target="_blank" rel="noopener">study in <em>Advances in Atmospheric Sciences</em></a> led by the Institute of Atmospheric Physics at the Chinese Academy of Sciences reported that from 2024 to 2025, the upper 2,000 meters of the global ocean gained roughly 23 zettajoules of heat. The WMO's own summary puts that in perspective: that's around <strong>200 times the world's total electricity generation in 2024</strong>. The ocean didn't get the memo that we're all very busy and would prefer not to deal with this. About 90% of excess heat from global warming is stored in the ocean. So when we say "the planet is warming," we're mostly saying "the ocean is doing the heavy lifting and we're still arguing about whether to believe the thermometer."</p>
+
+      <p>La Niña was in place for much of 2025 — a pattern that typically cools the globe. Did it help? Sure. It helped 2025 be merely one of the <em>three</em> warmest years instead of the single warmest. The WMO's Secretary-General, Celeste Saulo, put it plainly:</p>
+
+      <div class="pq pq-a">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">The year 2025 started and ended with a cooling La Niña and yet it was still one of the warmest years on record globally because of the accumulation of heat-trapping greenhouse gases in our atmosphere. High land and ocean temperatures helped fuel extreme weather – heatwaves, heavy rainfall and intense tropical cyclones, underlining the vital need for early warning systems.</div>
+        <div class="pq-byline">Celeste Saulo, Secretary-General, World Meteorological Organization</div>
+        <a class="pq-src" href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">WMO Press Release, Jan 14, 2026</a>
+      </div>
+
+      <p>January 2026 didn't break the streak. <a href="https://yaleclimateconnections.org/2026/02/despite-eastern-u-s-cold-january-2026-was-one-of-the-warmest-januaries-on-record/" target="_blank" rel="noopener">NOAA's National Centers for Environmental Information, NASA, and the Copernicus Climate Change Service</a> all ranked it the fifth-warmest January since record-keeping began. So did the Arctic get the memo? Nope. Arctic sea ice extent in January 2026 was virtually tied for the second-lowest January in the 48-year satellite record. We're not even pausing for breath. We're just … warming.</p>
+
+      <ul class="art-list">
+        <li><strong>Years in the "warmest on record" club:</strong> The last 11.</li>
+        <li><strong>New science required to confirm it was hot:</strong> Eight independent datasets, consolidated by the WMO.</li>
+        <li><strong>Probability that the ocean will stop absorbing our excess heat because we're tired of the news:</strong> Zero.</li>
+      </ul>
+
+      <p>You can ignore the press release. You cannot ignore the ocean. It has the receipts — and they're written in zettajoules.</p>
+    </div>
+
+    <div class="art-closing cl-a">The data is authoritative. The trend is unbroken. The only thing that's optional is whether we finally act like it.</div>
+  </article>
+
+
+  <!-- ════════════════════════════════════════════════════
+       B — THE DISPATCH
+       Solutions-oriented, rigorous optimism, forward motion
+  ════════════════════════════════════════════════════ -->
+  <article class="version" id="v-b">
+    <div class="v-indicator vi-b">
+      <div class="vi-emoji">☀️</div>
+      <div>
+        <div class="vi-label">The Dispatch</div>
+        <div class="vi-name">Someone, Somewhere, Is Actually Fixing This</div>
+        <div class="vi-desc">Solutions, forward motion, and what to actually watch right now</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-b">The Numbers Are Sobering. Here's What the Same Data Tells Us About Where to Focus.</h2>
+
+    <div class="art-body">
+      <p>On January 14, 2026, the World Meteorological Organization confirmed 2025 as one of the three warmest years on record — 1.44°C (±0.13°C) above the 1850–1900 average — using a consolidated analysis of eight independent datasets. The past 11 years (2015–2025) are the 11 warmest on record in every one of those datasets. That's not a single outlier; it's structural. The good news: the same rigor that produced this finding is what makes early warning and adaptation possible.</p>
+
+      <div class="subhead sh-b">Why the WMO consolidation matters</div>
+
+      <p>WMO doesn't run one model or one thermometer. It consolidates NASA GISTEMP, NOAA NOAAGlobalTemp, Copernicus ERA5, the UK Met Office/UEA HadCRUT5, Berkeley Earth, JMA, and others into a single authoritative benchmark. That's why policymakers and insurers use it. <a href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">As WMO Secretary-General Celeste Saulo said</a>: "WMO's state of the climate monitoring, based on collaborative and scientifically rigorous global data collection, is more important than ever before because we need to ensure that Earth information is authoritative, accessible and actionable for all." The warming trend is the problem; the same data infrastructure is what makes targeted action and early warning possible.</p>
+
+      <div class="pq pq-b">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">The year 2025 started and ended with a cooling La Niña and yet it was still one of the warmest years on record globally because of the accumulation of heat-trapping greenhouse gases in our atmosphere. High land and ocean temperatures helped fuel extreme weather – heatwaves, heavy rainfall and intense tropical cyclones, underlining the vital need for early warning systems.</div>
+        <div class="pq-byline">Celeste Saulo, Secretary-General, World Meteorological Organization</div>
+        <a class="pq-src" href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">WMO Press Release, Jan 14, 2026</a>
+      </div>
+
+      <div class="subhead sh-b">Ocean heat: the metric that doesn't bounce</div>
+
+      <p>Surface temperatures can be nudged up or down by El Niño and La Niña. Ocean heat content is where the long-term signal lives. The <a href="https://link.springer.com/article/10.1007/s00376-026-5876-0" target="_blank" rel="noopener">2025 ocean heat content study in <em>Advances in Atmospheric Sciences</em></a> (Lijing Cheng et al.) found the global upper 2000 m ocean gained ~23 ± 8 zettajoules relative to 2024 — on the order of 200 times global electricity generation. About 33% of the global ocean area ranked among its historical top three warmest conditions. That heat doesn't disappear when La Niña shows up; it's the buffer that keeps pushing extremes. Tracking it is how we know we're not just seeing weather — we're seeing climate.</p>
+
+      <div class="subhead sh-b">What to watch next</div>
+
+      <p><a href="https://yaleclimateconnections.org/2026/02/despite-eastern-u-s-cold-january-2026-was-one-of-the-warmest-januaries-on-record/" target="_blank" rel="noopener">January 2026 continued the pattern</a>: fifth-warmest January globally per NOAA NCEI, NASA, and Copernicus. The WMO's full State of the Global Climate 2025 report is due in March 2026 — that's the next consolidated snapshot of greenhouse gases, sea level, glaciers, and sea ice. In the meantime, the takeaway isn't "nothing works." It's that the same observational and scientific infrastructure that confirms the trend is the one we need to target resilience, early warning, and emissions cuts where they matter most.</p>
+    </div>
+
+    <div class="art-closing cl-b">The data is clear. So is the path: use it.</div>
+  </article>
+
+
+  <!-- ════════════════════════════════════════════════════
+       C — GROUND TRUTH
+       Exasperated veteran, precise, validated fury
+  ════════════════════════════════════════════════════ -->
+  <article class="version" id="v-c">
+    <div class="v-indicator vi-c">
+      <div class="vi-emoji">😤</div>
+      <div>
+        <div class="vi-label">Ground Truth</div>
+        <div class="vi-name">Still Here. Still Reading. Still Furious.</div>
+        <div class="vi-desc">For climate professionals who need someone to say what everyone already knows</div>
+      </div>
+    </div>
+
+    <h2 class="art-hed hed-c">1.44°C. Eleven Years. The Ocean Just Took Another Record. None of This Is Surprising.</h2>
+
+    <div class="art-body">
+      <p>The World Meteorological Organization confirmed on January 14, 2026 what every major dataset had already shown: <a href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">2025 was one of the three warmest years on record</a>. Global average surface temperature: 1.44°C above the 1850–1900 average, margin of uncertainty ±0.13°C. The past three years (2023–2025) are the three warmest in all eight datasets WMO uses. The past 11 years (2015–2025) are the 11 warmest. There is no ambiguity. There is no "maybe it's natural." There is a straight line from emissions to accumulation to this number.</p>
+
+      <p>2025 had La Niña conditions — a cooling phase. It didn't matter. The WMO statement is explicit: "The year 2025 started and ended with a cooling La Niña and yet it was still one of the warmest years on record globally because of the accumulation of heat-trapping greenhouse gases in our atmosphere." Temporary variability no longer masks the trend. We've used up the margin for "bad luck."</p>
+
+      <div class="pq pq-c">
+        <span class="pq-mark">"</span>
+        <div class="pq-text">The year 2025 started and ended with a cooling La Niña and yet it was still one of the warmest years on record globally because of the accumulation of heat-trapping greenhouse gases in our atmosphere. High land and ocean temperatures helped fuel extreme weather – heatwaves, heavy rainfall and intense tropical cyclones, underlining the vital need for early warning systems.</div>
+        <div class="pq-byline">Celeste Saulo, Secretary-General, World Meteorological Organization</div>
+        <a class="pq-src" href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank" rel="noopener">WMO Press Release, Jan 14, 2026</a>
+      </div>
+
+      <p>Ocean heat content is the clearest measure of accumulated change. About 90% of excess heat from global warming is stored in the ocean. The <a href="https://link.springer.com/article/10.1007/s00376-026-5876-0" target="_blank" rel="noopener">international study published in <em>Advances in Atmospheric Sciences</em></a> (Cheng et al., Institute of Atmospheric Physics, Chinese Academy of Sciences) reported that from 2024 to 2025, the global upper 2000 m ocean heat content increased by approximately 23 ± 8 zettajoules. The WMO's own summary states that that is around 200 times the world's total electricity generation in 2024. So we have a number. We have a comparison. We have no excuse to pretend we didn't know.</p>
+
+      <div class="subhead sh-c">January 2026 didn't reset the clock</div>
+
+      <p><a href="https://yaleclimateconnections.org/2026/02/despite-eastern-u-s-cold-january-2026-was-one-of-the-warmest-januaries-on-record/" target="_blank" rel="noopener">NOAA NCEI, NASA, and Copernicus</a> all ranked January 2026 as the fifth-warmest January on record. No land or ocean area recorded record-cold January temperatures. Arctic sea ice extent in January 2026 was effectively tied for the second-lowest January in the 48-year satellite record. The contiguous U.S. — despite a severe winter storm that became Earth's first billion-dollar weather disaster of 2026 — still had a January in the warmest third of its 132-year record. The signal is not hidden. It is not confusing. It is consistent.</p>
+
+      <p>The people in this field who run the models, maintain the buoys, and process the satellite data have been saying this for years. The WMO consolidation is a service: one place, one number, eight datasets, no spin. What we do with it is the only open question.</p>
+    </div>
+
+    <div class="art-closing cl-c">You can't argue with 1.44°C. You can only choose whether to act on it.</div>
+  </article>
+
+</main>
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<footer class="footer">
+  <div class="footer-name">Climate Triple Takes</div>
+  <div class="footer-note">
+    Issue #002 &nbsp;·&nbsp; February 28, 2026 &nbsp;·&nbsp; For climate professionals<br>
+    All quotes and statistics link to verified primary sources. The facts never change. The framing does.<br>
+    <a href="https://wmo.int/news/media-centre/wmo-confirms-2025-was-one-of-warmest-years-record" target="_blank">WMO Jan 14, 2026</a> &nbsp;·&nbsp;
+    <a href="https://link.springer.com/article/10.1007/s00376-026-5876-0" target="_blank">Advances in Atmospheric Sciences (ocean heat 2025)</a> &nbsp;·&nbsp;
+    <a href="https://yaleclimateconnections.org/2026/02/despite-eastern-u-s-cold-january-2026-was-one-of-the-warmest-januaries-on-record/" target="_blank">Yale Climate Connections / NCEI Jan 2026</a>
+  </div>
+</footer>
+
+<script>
+  function setStyle(s) {
+    document.querySelectorAll('.version').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.s-tab').forEach(el => el.classList.remove('on-a','on-b','on-c'));
+    document.getElementById('v-' + s).classList.add('active');
+    const idx = { a: 0, b: 1, c: 2 };
+    document.querySelectorAll('.s-tab')[idx[s]].classList.add('on-' + s);
+    if (window.innerWidth < 640) {
+      document.querySelector('.content-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  setStyle('a');
+</script>
+</body>
+</html>
