@@ -83,7 +83,8 @@
 
   /* ── EXPLAINER CARDS ──────────────────────────────── */
   .explainer-row { max-width: 860px; margin: 0 auto; padding: 28px 32px 0; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
-  .ex-card { border-radius: 8px; padding: 18px 16px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s; }
+  .ex-card { border-radius: 8px; padding: 18px 16px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s, opacity 0.4s ease, filter 0.4s ease; }
+  .ex-card.ex-inactive { opacity: 0.28; filter: grayscale(35%); pointer-events: none; }
   .ex-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,0,0,0.09); }
   .ex-a { background: var(--a-light); border-color: var(--a-accent); }
   .ex-b { background: var(--b-light); border-color: var(--b-accent); }
@@ -225,26 +226,28 @@
 
   /* ── MODE B: THE DISPATCH ─────────────────────────────────── */
   body.mode-b {
-    background: #FDFEF5;
-    --ink: #0D2B1F;
-    --mid: #4A6741;
-    --border: #C5DDB5;
+    background: #FFE566;
+    --ink: #1B4332;
+    --mid: #2D6A4F;
+    --border: #1B4332;
     --active-border: 0px;
-    --a-accent: #1B6B3A; --a-light: #E8F5E0; --a-dark: #0A3D12; --a-bar: #2E9E55;
-    --b-accent: #1B6B3A; --b-light: #E8F5E0; --b-dark: #0A3D12; --b-bar: #2E9E55;
-    --c-accent: #1B6B3A; --c-light: #E8F5E0; --c-dark: #0A3D12; --c-bar: #2E9E55;
+    --a-accent: #1B4332; --a-light: #D1FAE5; --a-dark: #0A2618; --a-bar: #1B4332;
+    --b-accent: #1B4332; --b-light: #D1FAE5; --b-dark: #0A2618; --b-bar: #1B4332;
+    --c-accent: #1B4332; --c-light: #D1FAE5; --c-dark: #0A2618; --c-bar: #1B4332;
   }
 
-  body.mode-b .ex-card,
-  body.mode-b .pq,
-  body.mode-b .v-indicator {
-    border: none;
-    border-left: 3px solid #2E9E55;
-    box-shadow: 0 8px 32px rgba(27, 107, 58, 0.12);
+  body.mode-b::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(27, 67, 50, 0.10) 5px, transparent 5px);
+    background-size: 30px 30px;
   }
 
   body.mode-b .content-wrap {
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
     border-radius: 12px;
   }
 
@@ -260,26 +263,29 @@
 
   /* ── MODE C: GROUND TRUTH ─────────────────────────────────── */
   body.mode-c {
-    background: #F5F0E8;
-    --ink: #111111;
-    --mid: #555555;
-    --border: #CCBBAA;
+    background: #D4E6F1;
+    --ink: #0E1E35;
+    --mid: #3A5570;
+    --border: #0E1E35;
     --active-border: 1px;
-    --a-accent: #B71C1C; --a-light: #FDF0EE; --a-dark: #7A0000; --a-bar: #B71C1C;
-    --b-accent: #B71C1C; --b-light: #FDF0EE; --b-dark: #7A0000; --b-bar: #B71C1C;
-    --c-accent: #B71C1C; --c-light: #FDF0EE; --c-dark: #7A0000; --c-bar: #B71C1C;
+    --a-accent: #B71C1C; --a-light: #EBF4FB; --a-dark: #0E1E35; --a-bar: #B71C1C;
+    --b-accent: #B71C1C; --b-light: #EBF4FB; --b-dark: #0E1E35; --b-bar: #B71C1C;
+    --c-accent: #B71C1C; --c-light: #EBF4FB; --c-dark: #0E1E35; --c-bar: #B71C1C;
+  }
+
+  body.mode-c::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(14, 30, 53, 0.10) 5px, transparent 5px);
+    background-size: 30px 30px;
   }
 
   body.mode-c .art-body p {
     font-size: 15px;
     line-height: 1.75;
-  }
-
-  body.mode-c .ex-card,
-  body.mode-c .pq,
-  body.mode-c .v-indicator {
-    border: 1px solid #CCBBAA;
-    border-left: 3px solid #B71C1C;
   }
 
 </style>
@@ -535,6 +541,8 @@
     const idx = { a: 0, b: 1, c: 2 };
     document.querySelectorAll('.s-tab')[idx[s]].classList.add('on-' + s);
     document.body.className = 'mode-' + s;
+    document.querySelectorAll('.ex-card').forEach(el => el.classList.add('ex-inactive'));
+    document.querySelector('.ex-' + s).classList.remove('ex-inactive');
     if (window.innerWidth < 640) {
       document.querySelector('.content-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
