@@ -47,7 +47,7 @@ Size/weight changes are allowed (not family changes):
 When a mode is selected, the other two explainer cards fade to 28% opacity + slight grayscale (`ex-inactive` class). Only the active mode's card is fully visible. This is handled in `setStyle()` in the JS.
 
 ## Deployment
-- Local directory: `/Users/tinahuang/Desktop/climate-site/`
+- Local directory: `/Users/tinahuang/Desktop/climate-triple-takes/`
 - Git remote: `https://github.com/tinahuang1994/my-first-claude-project.git`
 - Deploy command: `npx netlify-cli deploy --prod --dir .`
 - The site is linked to Netlify site ID `5091e958-8832-47ec-a63a-4624f7ce3e8e`
